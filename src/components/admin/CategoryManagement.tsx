@@ -62,9 +62,13 @@ const CategoryManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Category & Field Management</h2>
+    <div className="flex flex-col h-full">
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold">Category & Field Management</h2>
+          <p className="text-muted-foreground">Manage categories and their custom fields</p>
+        </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -93,8 +97,10 @@ const CategoryManagement = () => {
         </Dialog>
       </div>
 
-      <div className="grid gap-6">
-        {categories.map((category) => (
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="grid gap-6 pr-2">
+          {categories.map((category) => (
           <Card key={category.id}>
             <CardHeader>
               <div className="flex justify-between items-center">
@@ -150,7 +156,8 @@ const CategoryManagement = () => {
               </Table>
             </CardContent>
           </Card>
-        ))}
+          ))}
+        </div>
       </div>
 
       <Dialog open={isFieldDialogOpen} onOpenChange={setIsFieldDialogOpen}>

@@ -1,13 +1,21 @@
 
 import { Button } from '@/components/ui/button';
-import { Menu, Bell, Search } from 'lucide-react';
+import { Menu, Bell, Search, LogOut } from 'lucide-react';
+
+interface User {
+  email: string;
+  name: string;
+  role: string;
+}
 
 interface AdminHeaderProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  user?: User | null;
+  onLogout?: () => void;
 }
 
-const AdminHeader = ({ sidebarOpen, setSidebarOpen }: AdminHeaderProps) => {
+const AdminHeader = ({ sidebarOpen, setSidebarOpen, user, onLogout }: AdminHeaderProps) => {
   return (
     <div className="sticky top-0 z-50 bg-background border-b lg:hidden">
       <div className="flex items-center justify-between p-4">
@@ -20,12 +28,11 @@ const AdminHeader = ({ sidebarOpen, setSidebarOpen }: AdminHeaderProps) => {
         </Button>
         <h1 className="text-lg font-semibold">Admin Panel</h1>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm">
-            <Search className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="sm">
-            <Bell className="h-5 w-5" />
-          </Button>
+          {onLogout && (
+            <Button variant="ghost" size="sm" onClick={onLogout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

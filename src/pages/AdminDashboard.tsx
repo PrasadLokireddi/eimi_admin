@@ -16,10 +16,14 @@ import PackageManagement from '@/components/admin/PackageManagement';
 import AdminHeader from '@/components/admin/layout/AdminHeader';
 import AdminSidebar from '@/components/admin/layout/AdminSidebar';
 import AdminOverview from '@/components/admin/overview/AdminOverview';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { LogOut } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { logout, user } = useAuth();
 
   const stats = {
     totalVendors: 142,
@@ -78,24 +82,59 @@ const AdminDashboard = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      <AdminHeader 
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
+  const handleLogout = () => {
+    logout();
+  };
 
-      <div className="flex">
-        <AdminSidebar 
-          navItems={navItems}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
+  return (
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 lg:hidden">
+        <AdminHeader 
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
+          user={user}
+          onLogout={handleLogout}
         />
+      </div>
 
-        <div className="flex-1 lg:ml-0">
-          <div className="p-4 lg:p-6">
+      {/* Sidebar */}
+      <AdminSidebar 
+        navItems={navItems}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        user={user}
+        onLogout={handleLogout}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
+        {/* Fixed Header for Desktop */}
+        <div className="hidden lg:block sticky top-0 z-40 bg-background border-b">
+          <div className="flex items-center justify-between p-4 lg:p-6">
+            <div>
+              <h1 className="text-2xl font-bold capitalize">{activeTab}</h1>
+              <p className="text-sm text-muted-foreground">
+                Manage your {activeTab} efficiently
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-4 lg:p-6 pt-20 lg:pt-6">
             {renderContent()}
           </div>
         </div>
