@@ -15,6 +15,7 @@ class ApiClient {
   private getHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'accept': 'application/json',
     };
 
     const token = this.getAuthToken();
@@ -29,7 +30,8 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`;
+    // Remove duplicate slash if present
+    const url = `${this.baseURL.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
     
     const config: RequestInit = {
       ...options,
@@ -97,11 +99,14 @@ export const apiClient = new ApiClient();
 // Auth API methods
 export const authAPI = {
   login: async (email: string, password: string) => {
-    return apiClient.post<{ token: string; user: any }>('/auth/login', {
-      email,
-      password,
-    });
-  },
+  // Explicitly quote keys in the payload object
+  return apiClient.post<{
+    data: any; token: string; user: any 
+}>('auth/admin/login', {
+    "username": email,
+    "password": password,
+  });
+},
   
   logout: async () => {
     return apiClient.post('/auth/logout');

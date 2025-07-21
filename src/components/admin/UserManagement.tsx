@@ -1,81 +1,67 @@
-
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from '@/components/ui/table';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle
+} from '@/components/ui/dialog';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select';
 import { Avatar } from '@/components/ui/avatar';
-import { UserCheck, UserX, Eye, Search, Filter, Calendar, Heart } from 'lucide-react';
+import { UserCheck, UserX, Eye, Search, Filter, Heart, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
+import config from '@/config/environment';
 
 const UserManagement = () => {
   const { toast } = useToast();
+  const { token } = useAuth();
+
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // Mock data
-  const users = [
-    {
-      id: 1,
-      name: 'John Smith',
-      email: 'john@example.com',
-      phone: '+1234567890',
-      status: 'active',
-      joinDate: '2023-12-15',
-      lastActive: '2024-01-22',
-      totalBookings: 5,
-      completedBookings: 3,
-      wishlistItems: 12,
-      reviewsGiven: 8,
-      location: 'New York'
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      email: 'sarah@example.com',
-      phone: '+1234567891',
-      status: 'active',
-      joinDate: '2024-01-05',
-      lastActive: '2024-01-23',
-      totalBookings: 2,
-      completedBookings: 1,
-      wishlistItems: 8,
-      reviewsGiven: 3,
-      location: 'California'
-    },
-    {
-      id: 3,
-      name: 'Mike Wilson',
-      email: 'mike@example.com',
-      phone: '+1234567892',
-      status: 'suspended',
-      joinDate: '2023-11-20',
-      lastActive: '2024-01-15',
-      totalBookings: 15,
-      completedBookings: 12,
-      wishlistItems: 25,
-      reviewsGiven: 18,
-      location: 'Texas'
-    },
-    {
-      id: 4,
-      name: 'Emma Davis',
-      email: 'emma@example.com',
-      phone: '+1234567893',
-      status: 'inactive',
-      joinDate: '2023-10-10',
-      lastActive: '2023-12-05',
-      totalBookings: 1,
-      completedBookings: 0,
-      wishlistItems: 3,
-      reviewsGiven: 0,
-      location: 'Florida'
+  const [newUsers, setNewUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageNo, setPageNo] = useState<number>(1);
+  const [pageSize] = useState<number>(10);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${config.apiUrl}user/all?pageNo=${pageNo - 1}&size=${pageSize}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const data = response.data?.data || {};
+        setNewUsers(data.data || []);
+        setTotalUsers(data.total || 0);
+      } catch (error) {
+        toast({
+          title: 'Failed to fetch users',
+          description: 'Please try again later.',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (token) {
+      fetchUsers();
     }
-  ];
+  }, [token, toast, pageNo, pageSize]);
+
+  const totalPages = Math.ceil(totalUsers / pageSize);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -87,17 +73,11 @@ const UserManagement = () => {
   };
 
   const handleActivate = (userId: number) => {
-    toast({
-      title: "User Activated",
-      description: "User account has been activated successfully.",
-    });
+    toast({ title: 'User Activated', description: 'User account has been activated successfully.' });
   };
 
   const handleSuspend = (userId: number) => {
-    toast({
-      title: "User Suspended",
-      description: "User account has been suspended.",
-    });
+    toast({ title: 'User Suspended', description: 'User account has been suspended.' });
   };
 
   const handleViewDetails = (user: any) => {
@@ -105,12 +85,68 @@ const UserManagement = () => {
     setIsDetailsOpen(true);
   };
 
-  const filteredUsers = filterStatus === 'all' 
-    ? users 
-    : users.filter(user => user.status === filterStatus);
+  const renderPagination = () => {
+    const pages = [];
+    const maxVisible = 3;
+
+    let start = Math.max(1, pageNo - 1);
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    if (pageNo > 1) {
+      pages.push(
+        <button key="prev" onClick={() => setPageNo(pageNo - 1)} className="text-muted-foreground">
+          <ArrowLeft className="inline mr-1" /> Previous
+        </button>
+      );
+    }
+
+    if (start > 1) {
+      pages.push(<span key="start">1</span>);
+      if (start > 2) pages.push(<span key="dots1">...</span>);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => setPageNo(i)}
+          className={`px-3 py-1 rounded ${i === pageNo ? 'bg-gray-200 font-semibold' : 'text-muted-foreground'}`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) pages.push(<span key="dots2">...</span>);
+      pages.push(<span key="end">{totalPages}</span>);
+    }
+
+    if (pageNo < totalPages) {
+      pages.push(
+        <button key="next" onClick={() => setPageNo(pageNo + 1)} className="text-muted-foreground">
+          Next <ArrowRight className="inline ml-1" />
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex justify-between items-center px-4 pt-6">
+        <div className="flex gap-2 items-center text-sm">{pages}</div>
+        <div className="text-sm text-muted-foreground">
+          Showing {(pageNo - 1) * pageSize + 1} - {Math.min(pageNo * pageSize, totalUsers)} of {totalUsers}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">User Management</h2>
         <div className="flex gap-4">
@@ -133,41 +169,60 @@ const UserManagement = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">
-              {users.filter(u => u.status === 'active').length}
-            </div>
-            <p className="text-sm text-muted-foreground">Active Users</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-gray-600">
-              {users.filter(u => u.status === 'inactive').length}
-            </div>
-            <p className="text-sm text-muted-foreground">Inactive Users</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-red-600">
-              {users.filter(u => u.status === 'suspended').length}
-            </div>
-            <p className="text-sm text-muted-foreground">Suspended</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">
-              {users.reduce((total, user) => total + user.totalBookings, 0)}
-            </div>
-            <p className="text-sm text-muted-foreground">Total Bookings</p>
-          </CardContent>
-        </Card>
-      </div>
+            {/* Grid Cards or Skeletons */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 animate-pulse">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="p-4 space-y-2">
+                <div className="h-6 bg-muted rounded w-1/3" />
+                <div className="h-4 bg-muted rounded w-2/3" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-green-600">
+                {/* {users.filter(u => u.status === 'active').length} */}
+                2
+              </div>
+              <p className="text-sm text-muted-foreground">Active Users</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-gray-600">
+                {/* {users.filter(u => u.status === 'inactive').length} */}
+                1
+              </div>
+              <p className="text-sm text-muted-foreground">Inactive Users</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-red-600">
+                {/* {users.filter(u => u.status === 'suspended').length} */}
+                0
+              </div>
+              <p className="text-sm text-muted-foreground">Suspended</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold text-blue-600">
+                {/* {users.reduce((total, u) => total + u.totalBookings, 0)} */}
+                23
+              </div>
+              <p className="text-sm text-muted-foreground">Total Bookings</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
+      {/* User Table */}
       <Card>
         <CardContent>
           <Table>
@@ -183,75 +238,81 @@ const UserManagement = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8">
-                        <div className="bg-primary/10 w-full h-full flex items-center justify-center text-primary font-medium">
-                          {user.name.charAt(0)}
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i} className="animate-pulse">
+                    {Array.from({ length: 7 }).map((_, j) => (
+                      <TableCell key={j}>
+                        <div className="h-4 bg-muted rounded w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                newUsers.map((user: any) => {
+                  const contact = user.contactDetails || {};
+                  return (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <div className="bg-primary/10 w-full h-full flex items-center justify-center text-primary font-medium">
+                              {(contact.name || 'U').charAt(0)}
+                            </div>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{contact.name || 'Unknown'}</div>
+                            <div className="text-sm text-muted-foreground">-</div>
+                          </div>
                         </div>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.location}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div>{user.email}</div>
-                      <div className="text-muted-foreground">{user.phone}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(user.status)}>
-                      {user.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div>Last: {user.lastActive}</div>
-                      <div className="text-muted-foreground">
-                        {user.totalBookings} bookings
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" />
-                        {user.wishlistItems}
-                      </div>
-                      <div className="text-muted-foreground">
-                        {user.reviewsGiven} reviews
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.joinDate}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(user)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      {user.status === 'active' ? (
-                        <Button variant="outline" size="sm" onClick={() => handleSuspend(user.id)}>
-                          <UserX className="h-4 w-4 text-red-600" />
-                        </Button>
-                      ) : (
-                        <Button variant="outline" size="sm" onClick={() => handleActivate(user.id)}>
-                          <UserCheck className="h-4 w-4 text-green-600" />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div>{contact.email || '-'}</div>
+                          <div className="text-muted-foreground">{contact.mobile || '-'}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(user.status || 'inactive')}>
+                          {user.status || 'inactive'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div>Last: -</div>
+                          <div className="text-muted-foreground">- bookings</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div className="flex items-center gap-1">
+                            <Heart className="h-3 w-3" /> 0
+                          </div>
+                          <div className="text-muted-foreground">0 reviews</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{user.createdTimeStamp?.split('T')[0]}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleViewDetails(user)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleActivate(user.id)}>
+                            <UserCheck className="h-4 w-4 text-green-600" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
+          {renderPagination()}
         </CardContent>
       </Card>
 
+      {/* User Detail Dialog */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -263,13 +324,12 @@ const UserManagement = () => {
                 <div>
                   <h4 className="font-medium mb-3">Personal Information</h4>
                   <div className="space-y-2 text-sm">
-                    <div><span className="font-medium">Name:</span> {selectedUser.name}</div>
-                    <div><span className="font-medium">Email:</span> {selectedUser.email}</div>
-                    <div><span className="font-medium">Phone:</span> {selectedUser.phone}</div>
-                    <div><span className="font-medium">Location:</span> {selectedUser.location}</div>
+                    <div><span className="font-medium">Name:</span> {selectedUser?.contactDetails?.name || 'N/A'}</div>
+                    <div><span className="font-medium">Email:</span> {selectedUser?.contactDetails?.email || 'N/A'}</div>
+                    <div><span className="font-medium">Phone:</span> {selectedUser?.contactDetails?.mobile || 'N/A'}</div>
                     <div><span className="font-medium">Status:</span> 
-                      <Badge className={`ml-2 ${getStatusColor(selectedUser.status)}`}>
-                        {selectedUser.status}
+                      <Badge className={`ml-2 ${getStatusColor(selectedUser.status || 'inactive')}`}>
+                        {selectedUser.status || 'inactive'}
                       </Badge>
                     </div>
                   </div>
@@ -277,36 +337,12 @@ const UserManagement = () => {
                 <div>
                   <h4 className="font-medium mb-3">Account Activity</h4>
                   <div className="space-y-2 text-sm">
-                    <div><span className="font-medium">Join Date:</span> {selectedUser.joinDate}</div>
-                    <div><span className="font-medium">Last Active:</span> {selectedUser.lastActive}</div>
-                    <div><span className="font-medium">Total Bookings:</span> {selectedUser.totalBookings}</div>
-                    <div><span className="font-medium">Completed:</span> {selectedUser.completedBookings}</div>
-                    <div><span className="font-medium">Reviews Given:</span> {selectedUser.reviewsGiven}</div>
+                    <div><span className="font-medium">Join Date:</span> {selectedUser.createdTimeStamp?.split('T')[0] || 'N/A'}</div>
+                    <div><span className="font-medium">Last Active:</span> -</div>
+                    <div><span className="font-medium">Total Bookings:</span> -</div>
+                    <div><span className="font-medium">Completed:</span> -</div>
+                    <div><span className="font-medium">Reviews Given:</span> -</div>
                   </div>
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="font-medium mb-3">Engagement Statistics</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="p-3 text-center">
-                      <div className="text-xl font-bold">{selectedUser.totalBookings}</div>
-                      <div className="text-sm text-muted-foreground">Total Bookings</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-3 text-center">
-                      <div className="text-xl font-bold text-red-600">{selectedUser.wishlistItems}</div>
-                      <div className="text-sm text-muted-foreground">Wishlist Items</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-3 text-center">
-                      <div className="text-xl font-bold text-blue-600">{selectedUser.reviewsGiven}</div>
-                      <div className="text-sm text-muted-foreground">Reviews Given</div>
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
 

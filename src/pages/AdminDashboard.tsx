@@ -23,7 +23,7 @@ import { LogOut } from 'lucide-react';
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
 
   const stats = {
     totalVendors: 142,
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
         <AdminHeader 
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          user={user}
+          // user={user}
           onLogout={handleLogout}
         />
       </div>
@@ -105,7 +105,7 @@ const AdminDashboard = () => {
         setActiveTab={setActiveTab}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        user={user}
+        // user={user}
         onLogout={handleLogout}
       />
 

@@ -14,8 +14,8 @@ const CURRENT_ENVIRONMENT: Environment = 'DEV';
 const environments: Record<Environment, EnvironmentConfig> = {
   DEV: {
     environment: 'DEV',
-    apiUrl: 'http://localhost:3000/api',
-    appName: 'Admin Panel (Development)',
+    apiUrl: 'https://dev-api.eimibuyorsell.com/api/',
+    appName: 'Admin Panel',
     version: '1.0.0-dev'
   },
   STAGE: {
