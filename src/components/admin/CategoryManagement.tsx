@@ -1,13 +1,18 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from '@/components/ui/table';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
+} from '@/components/ui/dialog';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select';
 import { Plus, Edit, Trash2, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,7 +22,6 @@ const CategoryManagement = () => {
   const [isFieldDialogOpen, setIsFieldDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
 
-  // Mock data
   const categories = [
     {
       id: 1,
@@ -62,9 +66,9 @@ const CategoryManagement = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Fixed Header */}
-      <div className="flex-shrink-0 flex justify-between items-center mb-6">
+    <div className="h-screen p-4 overflow-hidden">
+      {/* Header - Fixed Height */}
+      <div className="h-[70px] flex justify-between items-center mb-4">
         <div>
           <h2 className="text-2xl font-bold">Category & Field Management</h2>
           <p className="text-muted-foreground">Manage categories and their custom fields</p>
@@ -97,69 +101,70 @@ const CategoryManagement = () => {
         </Dialog>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid gap-6 pr-2">
+      {/* Scrollable List Area */}
+      <div className="h-[calc(100vh-120px)] overflow-y-auto pr-2 space-y-6">
+        <div className="grid gap-6">
           {categories.map((category) => (
-          <Card key={category.id}>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle className="flex items-center gap-2">
-                  {category.name}
-                  <Badge variant="secondary">{category.subcategories.length} subcategories</Badge>
-                </CardTitle>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => handleConfigureFields(category)}>
-                    <Settings className="h-4 w-4" />
-                  </Button>
+            <Card key={category.id}>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-2">
+                    {category.name}
+                    <Badge variant="secondary">{category.subcategories.length} subcategories</Badge>
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleConfigureFields(category)}>
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Subcategory</TableHead>
-                    <TableHead>Custom Fields</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {category.subcategories.map((sub) => (
-                    <TableRow key={sub.id}>
-                      <TableCell className="font-medium">{sub.name}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1 flex-wrap">
-                          {sub.fields.map((field, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {field}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Subcategory</TableHead>
+                      <TableHead>Custom Fields</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {category.subcategories.map((sub) => (
+                      <TableRow key={sub.id}>
+                        <TableCell className="font-medium">{sub.name}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-1 flex-wrap">
+                            {sub.fields.map((field, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {field}
+                              </Badge>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button variant="outline" size="sm">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
 
+      {/* Field Configuration Dialog */}
       <Dialog open={isFieldDialogOpen} onOpenChange={setIsFieldDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>

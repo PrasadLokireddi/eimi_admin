@@ -12,19 +12,14 @@ class ApiClient {
     return localStorage.getItem('auth_token');
   }
 
-  private getHeaders(): Record<string, string> {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'accept': 'application/json',
-    };
-
-    const token = this.getAuthToken();
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
-    return headers;
-  }
+private getHeaders(): Record<string, string> {
+  const token = localStorage.getItem('auth_token');
+  return {
+    'Content-Type': 'application/json',
+    'accept': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+}
 
   async request<T>(
     endpoint: string,

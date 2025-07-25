@@ -117,7 +117,7 @@ const ProductManagement = () => {
   });
 
   return (
-    <div className="space-y-6">
+     <div className="p-2 md:p-4 lg:p-4 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Product Management</h2>
         <div className="flex gap-4">

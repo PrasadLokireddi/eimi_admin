@@ -112,7 +112,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
         {/* Fixed Header for Desktop */}
-        <div className="hidden lg:block sticky top-0 z-40 bg-background border-b">
+        {/* <div className="hidden lg:block sticky top-0 z-40 bg-background border-b">
           <div className="flex items-center justify-between p-4 lg:p-6">
             <div>
               <h1 className="text-2xl font-bold capitalize">{activeTab}</h1>
@@ -130,11 +130,11 @@ const AdminDashboard = () => {
               Sign Out
             </Button>
           </div>
-        </div>
+        </div> */}
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-4 lg:p-6 pt-20 lg:pt-6">
+        <div>
+          <div >
             {renderContent()}
           </div>
         </div>

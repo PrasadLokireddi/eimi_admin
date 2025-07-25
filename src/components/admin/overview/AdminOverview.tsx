@@ -29,7 +29,7 @@ interface AdminOverviewProps {
 
 const AdminOverview = ({ stats }: AdminOverviewProps) => {
   return (
-    <div className="space-y-6">
+     <div className="p-2 md:p-4 lg:p-4 space-y-6">
       <StatsGrid stats={stats} />
       <RecentActivity />
       <QuickActions />

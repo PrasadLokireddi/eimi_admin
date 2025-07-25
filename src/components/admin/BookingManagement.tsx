@@ -1,10 +1,8 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, Clock, MapPin, User, Search, Filter, Eye } from 'lucide-react';
@@ -16,7 +14,6 @@ const BookingManagement = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // Mock data
   const bookings = [
     {
       id: 1,
@@ -95,8 +92,8 @@ const BookingManagement = () => {
     setIsDetailsOpen(true);
   };
 
-  const filteredBookings = filterStatus === 'all' 
-    ? bookings 
+  const filteredBookings = filterStatus === 'all'
+    ? bookings
     : bookings.filter(booking => booking.status === filterStatus);
 
   const getStatusIcon = (status: string) => {
@@ -110,7 +107,7 @@ const BookingManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
+     <div className="p-2 md:p-4 lg:p-4 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Booking Management</h2>
         <div className="flex gap-4">
@@ -169,54 +166,52 @@ const BookingManagement = () => {
         </Card>
       </div>
 
-      {/* Timeline View */}
-      <Card>
+      {/* Booking Timeline (scrollable) */}
+      <Card className="max-h-[calc(100vh-210px)] flex flex-col">
         <CardHeader>
           <CardTitle>Booking Timeline</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {filteredBookings.map((booking) => (
-              <div key={booking.id} className="flex items-start gap-4 p-4 border rounded-lg hover:bg-muted/50">
-                <div className="text-2xl">{getStatusIcon(booking.status)}</div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">{booking.product}</h4>
-                    <Badge className={getStatusColor(booking.status)}>
-                      {booking.status}
-                    </Badge>
+        <CardContent className="overflow-y-auto flex-1 space-y-4">
+          {filteredBookings.map((booking) => (
+            <div key={booking.id} className="flex items-start gap-4 p-4 border rounded-lg hover:bg-muted/50">
+              <div className="text-2xl">{getStatusIcon(booking.status)}</div>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">{booking.product}</h4>
+                  <Badge className={getStatusColor(booking.status)}>
+                    {booking.status}
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <User className="h-3 w-3" />
+                    {booking.user}
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <User className="h-3 w-3" />
-                      {booking.user}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {booking.date}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {booking.time}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {booking.location}
-                    </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {booking.date}
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Vendor: {booking.vendor}
-                    </span>
-                    <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
-                      <Eye className="h-4 w-4 mr-2" />
-                      View Details
-                    </Button>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {booking.time}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {booking.location}
                   </div>
                 </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">
+                    Vendor: {booking.vendor}
+                  </span>
+                  <Button variant="outline" size="sm" onClick={() => handleViewDetails(booking)}>
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Details
+                  </Button>
+                </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
 
