@@ -15,19 +15,19 @@ const environments: Record<Environment, EnvironmentConfig> = {
   DEV: {
     environment: 'DEV',
     apiUrl: 'https://dev-api.eimibuyorsell.com/api/',
-    appName: 'Admin Panel',
+    appName: 'EIMI Admin',
     version: '1.0.0-dev'
   },
   STAGE: {
     environment: 'STAGE',
     apiUrl: 'https://staging-api.example.com',
-    appName: 'Admin Panel (Staging)',
+    appName: 'EIMI Admin (Staging)',
     version: '1.0.0-stage'
   },
   PROD: {
     environment: 'PROD',
     apiUrl: 'https://api.example.com',
-    appName: 'Admin Panel',
+    appName: 'EIMI Admin',
     version: '1.0.0'
   }
 };

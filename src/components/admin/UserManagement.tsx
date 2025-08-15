@@ -72,10 +72,10 @@ const UserManagement = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'suspended': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'ACTIVE': return 'bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800';
+      case 'INACTIVE': return 'bg-gray-100 text-gray-800 hover:bg-gray-100 hover:text-gray-800';
+      case 'SUSPENDED': return 'bg-red-100 text-red-800 hover:bg-red-100 hover:text-red-800';
+      default: return 'bg-gray-100 text-gray-800 hover:bg-gray-100 hover:text-gray-800';
     }
   };
 
@@ -206,10 +206,10 @@ const UserManagement = () => {
           <div className="overflow-y-auto h-[calc(100vh-310px)]">
             {newUsers.length === 0 && !isLoading ? (
               <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-    <Inbox className="w-12 h-12 mb-4 text-gray-400" />
-    <p className="text-sm font-medium">No results found</p>
-    <p className="text-xs mt-1 text-muted-foreground">Try adjusting your filters or search term.</p>
-  </div>
+                <Inbox className="w-12 h-12 mb-4 text-gray-400" />
+                <p className="text-sm font-medium">No results found</p>
+                <p className="text-xs mt-1 text-muted-foreground">Try adjusting your filters or search term.</p>
+              </div>
             ) : (
               <Table>
                 <TableHeader>
@@ -259,15 +259,15 @@ const UserManagement = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge className={getStatusColor(user.status || 'active')}>
-                              {user.status || 'active'}
+                            <Badge className={`${getStatusColor(user.status || 'ACTIVE')} pointer-events-none`}>
+                              {user.status || 'ACTIVE'}
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <div className="text-sm"><div>Last: 2024-01-22</div><div className="text-muted-foreground">0 bookings</div></div>
+                            <div className="text-sm"><div>Last: 2024-01-22</div><div className="text-muted-foreground">{user.totalBookings || 0} bookings</div></div>
                           </TableCell>
                           <TableCell>
-                            <div className="text-sm"><div className="flex items-center gap-1"><Heart className="h-3 w-3" /> 0</div><div className="text-muted-foreground">0 reviews</div></div>
+                            <div className="text-sm"><div className="flex items-center gap-1"><Heart className="h-3 w-3" />{user.favoritesCount}</div><div className="text-muted-foreground">{user.reviewsCount || 0} reviews</div></div>
                           </TableCell>
                           <TableCell>{user.createdTimeStamp?.split('T')[0]}</TableCell>
                           <TableCell className="text-right">
@@ -275,9 +275,16 @@ const UserManagement = () => {
                               <Button variant="outline" size="sm" onClick={() => handleViewDetails(user)}>
                                 <Eye className="h-4 w-4" />
                               </Button>
-                              <Button variant="outline" size="sm" onClick={() => handleActivate(user.id)}>
-                                <UserCheck className="h-4 w-4 text-green-600" />
-                              </Button>
+                            
+                              {user.status === 'ACTIVE' ? (
+                                <Button variant="outline" size="sm" onClick={() => handleSuspend(user.id)}>
+                                  <UserX className="h-4 w-4 text-red-600" />
+                                </Button>
+                              ) : (
+                                <Button variant="outline" size="sm" onClick={() => handleActivate(user.id)}>
+                                  <UserCheck className="h-4 w-4 text-green-600" />
+                                </Button>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>
@@ -308,8 +315,8 @@ const UserManagement = () => {
                     <div><span className="font-medium">Email:</span> {selectedUser?.contactDetails?.email || 'N/A'}</div>
                     <div><span className="font-medium">Phone:</span> {selectedUser?.contactDetails?.mobile || 'N/A'}</div>
                     <div><span className="font-medium">Status:</span>
-                      <Badge className={`ml-2 ${getStatusColor(selectedUser.status || 'active')}`}>
-                        {selectedUser.status || 'active'}
+                      <Badge className={`ml-2 ${getStatusColor(selectedUser.status || 'ACTIVE')} pointer-events-none`}>
+                        {selectedUser.status || 'ACTIVE'}
                       </Badge>
                     </div>
                   </div>
@@ -319,14 +326,14 @@ const UserManagement = () => {
                   <div className="space-y-2 text-sm">
                     <div><span className="font-medium">Join Date:</span> {selectedUser.createdTimeStamp?.split('T')[0] || 'N/A'}</div>
                     <div><span className="font-medium">Last Active:</span> 2024-01-22</div>
-                    <div><span className="font-medium">Total Bookings:</span> 0</div>
-                    <div><span className="font-medium">Completed:</span> 0</div>
-                    <div><span className="font-medium">Reviews Given:</span> 0</div>
+                    <div><span className="font-medium">Total Bookings:</span> {selectedUser.totalBookings || 0}</div>
+                    <div><span className="font-medium">Completed:</span> {selectedUser.completedBookings || 0}</div>
+                    <div><span className="font-medium">Reviews Given:</span> {selectedUser.reviewsCount || 0}</div>
                   </div>
                 </div>
               </div>
               <div className="flex gap-2 pt-4">
-                {selectedUser.status === 'active' ? (
+                {selectedUser.status === 'ACTIVE' ? (
                   <Button variant="outline" onClick={() => handleSuspend(selectedUser.id)} className="flex-1">
                     Suspend User
                   </Button>

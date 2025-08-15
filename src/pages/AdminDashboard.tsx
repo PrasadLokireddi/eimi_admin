@@ -45,14 +45,14 @@ const AdminDashboard = () => {
   const navItems = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'categories', label: 'Categories', icon: Grid3X3 },
-    { id: 'vendors', label: 'Vendors', icon: Users },
+    { id: 'vendors', label: 'Sellers', icon: Users },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'bookings', label: 'Bookings', icon: Calendar },
     { id: 'users', label: 'Users', icon: Users },
     { id: 'locations', label: 'Locations', icon: MapPin },
-    { id: 'images', label: 'Images', icon: Image },
-    { id: 'discounts', label: 'Discounts', icon: Percent },
-    { id: 'packages', label: 'Packages', icon: Box }
+    // { id: 'images', label: 'Images', icon: Image },
+    // { id: 'discounts', label: 'Discounts', icon: Percent },
+    // { id: 'packages', label: 'Packages', icon: Box }
   ];
 
   const renderContent = () => {

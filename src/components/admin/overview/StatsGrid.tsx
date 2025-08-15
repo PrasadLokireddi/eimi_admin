@@ -21,7 +21,7 @@ const StatsGrid = ({ stats }: StatsGridProps) => {
           </div>
           <div>
             <p className="text-2xl font-bold">{stats.totalVendors}</p>
-            <p className="text-xs text-muted-foreground">Vendors</p>
+            <p className="text-xs text-muted-foreground">Sellers</p>
           </div>
         </div>
       </Card>
@@ -57,7 +57,7 @@ const StatsGrid = ({ stats }: StatsGridProps) => {
           </div>
           <div>
             <p className="text-2xl font-bold">{stats.totalImages}</p>
-            <p className="text-xs text-muted-foreground">Images</p>
+            <p className="text-xs text-muted-foreground">Users</p>
           </div>
         </div>
       </Card>

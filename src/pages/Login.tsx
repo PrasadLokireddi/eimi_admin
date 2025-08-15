@@ -51,7 +51,7 @@ const Login = () => {
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight">{config.appName}</h1>
           <p className="text-muted-foreground mt-2">
-            Sign in to access the admin panel
+            Sign in to access the EIMI Admin Panel
           </p>
         </div>
         <Card>
