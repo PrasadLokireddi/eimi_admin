@@ -546,7 +546,7 @@ const CategoryManagement = () => {
               </Popover>
 
               {/* Reset Filters Button with Reload Icon */}
-              {/* <Button
+              <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleResetFilters}
@@ -554,7 +554,7 @@ const CategoryManagement = () => {
                 title="Reset filters to default range"
               >
                 <RotateCcw className="h-4 w-4" />
-              </Button> */}
+              </Button>
             </div>
           </div>
 
