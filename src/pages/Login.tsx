@@ -49,9 +49,10 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
+          <img src="/assets/logo.svg" alt="Logo"  className="mx-auto mb-4 w-24 h-14" />
           <h1 className="text-3xl font-bold tracking-tight">{config.appName}</h1>
           <p className="text-muted-foreground mt-2">
-            Sign in to access the EIMI Admin Panel
+            Sign in to access the EimiBuyOrSell Admin Panel
           </p>
         </div>
         <Card>

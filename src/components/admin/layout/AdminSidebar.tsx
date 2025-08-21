@@ -52,9 +52,9 @@ const AdminSidebar = ({
       `}>
         {/* Header */}
         <div className="p-4 border-b">
-          <h3 className="text-xl font-bold">EIMI Admin Dashboard</h3>
+          <h3 className="text-xl font-bold">EimiBuyOrSell</h3>
           <Badge variant="secondary" className="mt-2">
-            Control Panel
+            Admin Dashboard
           </Badge>
         </div>
         

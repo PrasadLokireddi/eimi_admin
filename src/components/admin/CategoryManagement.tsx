@@ -489,7 +489,7 @@ const CategoryManagement = () => {
       <div className="h-[120px] flex flex-col justify-between mb-4">
         <div>
           <h2 className="text-2xl font-bold">Category & Field Management</h2>
-          <p className="text-muted-foreground">Manage categories and their custom fields</p>
+          {/* <p className="text-muted-foreground">Manage categories and their custom fields</p> */}
         </div>
         
         {/* Search and Filter Row */}

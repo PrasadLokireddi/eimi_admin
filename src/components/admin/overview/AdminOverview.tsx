@@ -30,6 +30,10 @@ interface AdminOverviewProps {
 const AdminOverview = ({ stats }: AdminOverviewProps) => {
   return (
      <div className="p-2 md:p-4 lg:p-4 space-y-6">
+       <div>
+          <h2 className="text-2xl font-bold">Overview</h2>
+          {/* <p className="text-muted-foreground">A comprehensive view of your business performance and activities.</p> */}
+        </div>
       <StatsGrid stats={stats} />
       <RecentActivity />
       {/* <QuickActions /> */}
