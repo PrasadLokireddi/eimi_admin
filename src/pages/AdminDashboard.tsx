@@ -110,13 +110,13 @@ const AdminDashboard = () => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
         {/* Fixed Header for Desktop */}
         <div className="hidden lg:block sticky top-0 z-40 bg-background border-b">
-          <div className="flex items-center justify-between p-4 lg:p-6">
-            <div>
-              <h1 className="text-2xl font-bold capitalize">{activeTab}</h1>
-              <p className="text-sm text-muted-foreground">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 lg:p-6 gap-4">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold capitalize truncate">{activeTab}</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Manage your {activeTab} efficiently
               </p>
             </div>
@@ -124,17 +124,17 @@ const AdminDashboard = () => {
               variant="outline"
               size="sm"
               onClick={handleLogout}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 shrink-0"
             >
               <LogOut className="h-4 w-4" />
-              Sign Out
+              <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
         </div>
 
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto">
-          <div className="p-4 lg:p-6 pt-20 lg:pt-6">
+          <div className="p-3 sm:p-4 lg:p-6 pt-16 sm:pt-20 lg:pt-6">
             {renderContent()}
           </div>
         </div>

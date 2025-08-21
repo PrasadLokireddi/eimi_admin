@@ -46,14 +46,14 @@ const AdminSidebar = ({
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r flex flex-col transform transition-transform
+        fixed inset-y-0 left-0 z-50 w-56 sm:w-64 bg-card border-r flex flex-col transform transition-transform duration-300 ease-in-out
         lg:sticky lg:h-screen lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Header */}
-        <div className="p-4 border-b">
-          <h1 className="text-xl font-bold">Admin Dashboard</h1>
-          <Badge variant="secondary" className="mt-2">
+        <div className="p-3 sm:p-4 border-b">
+          <h1 className="text-lg sm:text-xl font-bold truncate">Admin Dashboard</h1>
+          <Badge variant="secondary" className="mt-2 text-xs">
             Control Panel
           </Badge>
         </div>
@@ -70,15 +70,15 @@ const AdminSidebar = ({
                   setSidebarOpen(false);
                 }}
                 className={`
-                  w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors
+                  w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-3 rounded-lg text-left transition-colors text-sm sm:text-base
                   ${activeTab === item.id 
                     ? 'bg-primary text-primary-foreground' 
                     : 'hover:bg-accent hover:text-accent-foreground'
                   }
                 `}
               >
-                <Icon className="h-5 w-5" />
-                <span className="font-medium">{item.label}</span>
+                <Icon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                <span className="font-medium truncate">{item.label}</span>
               </button>
             );
           })}

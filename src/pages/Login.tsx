@@ -64,19 +64,19 @@ const Login = () => {
   const credentials = sampleCredentials[config.environment];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight">{config.appName}</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{config.appName}</h1>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
             Sign in to access the admin panel
           </p>
           <div className="mt-4 p-3 bg-muted rounded-lg">
-            <p className="text-sm font-medium text-muted-foreground mb-2">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">
               Demo Credentials ({config.environment}):
             </p>
             <div className="text-xs space-y-1">
-              <p><strong>Email:</strong> {credentials.email}</p>
+              <p className="break-all"><strong>Email:</strong> {credentials.email}</p>
               <p><strong>Password:</strong> {credentials.password}</p>
             </div>
           </div>
